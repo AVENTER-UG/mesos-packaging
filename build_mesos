@@ -57,6 +57,7 @@ function globals {
   extra_libs=''
   configure_flags=""
   rename=false
+  prename=""
 }; globals
 
 function as_absolute {
@@ -74,7 +75,8 @@ function main {
       --src-dir)                src_dir="$2"       ; shift 2 ;;
       --build-dir)              build_dir="$2"     ; shift 2 ;;
       --prebuilt)               prebuilt=true      ; shift 1 ;;
-      --rename)                 rename=true      ; shift 1 ;;
+      --rename)                 rename=true        ; shift 1 ;;
+      --prename)                prename="$2"       ; shift 2 ;;
       --repo)                   repo="$2"          ; shift 2 ;;
       --branch)                 branch="$2"        ; shift 2 ;;
       --nominal-version)        version="$2"       ; shift 2 ;;
@@ -367,7 +369,7 @@ function deb_ {
   pkgname="pkg"
   if $rename; then
     os_tag=${linux//[\/.]/} # convert "ubuntu/14.04" to "ubuntu1404"
-    pkgname="mesos_${version}-${build_version}.${os_tag}_${arch}"
+    pkgname="${prename}mesos_${version}-${build_version}.${os_tag}_${arch}"
   fi
 
   rm -f "$this"/"$pkgname".deb
