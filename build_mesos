@@ -285,7 +285,7 @@ function init_scripts {
   mkdir -p usr/bin
   cp -p "$this"/mesos-init-wrapper usr/bin
   case "$1" in
-    fedora/*|redhat/7|redhat/7.*|redhat/8|redhat/8.*|centos/7|centos/7.*|rhel/7|rhel/7.*|opensuse/*)
+    fedora/*|redhat/7|redhat/7.*|redhat/8|redhat/8.*|centos/7|*centos/7.*|rhel/7|rhel/7.*|opensuse/*)
       mkdir -p usr/lib/systemd/system
       cp "$this"/systemd/master.systemd usr/lib/systemd/system/mesos-master.service
       cp "$this"/systemd/slave.systemd usr/lib/systemd/system/mesos-slave.service 
@@ -340,7 +340,7 @@ function pkg {
 function architecture {
   case "$linux" in
     ubuntu/*|debian/*) dpkg-architecture -qDEB_BUILD_ARCH ;;
-    centos/*|redhat/*|rhel/*|fedora/*|opensuse/*) arch ;;
+    *centos/*|redhat/*|rhel/*|fedora/*|opensuse/*) arch ;;
     *)                 err "Not sure how to determine arch for: $linux" ;;
   esac
 }
@@ -352,7 +352,7 @@ function find_gem_bin {
 function deb_ {
   local libcurl_package
   case "$linux" in
-    ubuntu/20*) libcurl_package="libcurl4 -d libcurl4-openssl-dev" ;;
+    ubuntu/20*) libcurl_package="libcurl4 -d libcurl4-nss-dev" ;;
     ubuntu/18*) libcurl_package="libcurl4 -d libcurl4-openssl-dev" ;;
     debian/11*) libcurl_package="libcurl4 -d libcurl4-nss-dev" ;;
     *)          libcurl_package="libcurl3" ;;
