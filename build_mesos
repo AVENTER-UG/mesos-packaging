@@ -186,7 +186,11 @@ function build {(
     rel_src_dir=$(pwd | sed -e's:/[^/]\+:../:g')$src_dir
   fi
 
-  "$rel_src_dir"/configure $(configure_opts)
+  case "$linux" in
+    ubuntu/22*) cmake .. ;;   
+    *) "$rel_src_dir"/configure $(configure_opts) ;;
+  esac
+
   make
 )}
 
@@ -257,9 +261,13 @@ function create_installation {(
   fi
   extra_libs
   init_scripts "$linux"
+
   if [[ ! $(configure_opts) =~ "--disable-java\>" ]]
   then
-    jars
+    case "$linux" in
+      ubuntu/22*) return ;;   
+      *) jars ;;
+    esac
   fi
 )}
 
@@ -290,7 +298,7 @@ function init_scripts {
       cp "$this"/systemd/master.systemd usr/lib/systemd/system/mesos-master.service
       cp "$this"/systemd/slave.systemd usr/lib/systemd/system/mesos-slave.service 
       return ;;
-    debian/8*|debian/9*|debian/11*|ubuntu/15*|ubuntu/16*|ubuntu/17*|ubuntu/18*|ubuntu/20*)
+    debian/8*|debian/9*|ubuntu/15*|ubuntu/16*|ubuntu/17*|ubuntu/18*|ubuntu/20*|ubuntu/22*)
       mkdir -p lib/systemd/system
       cp "$this"/systemd/master.systemd lib/systemd/system/mesos-master.service
       cp "$this"/systemd/slave.systemd lib/systemd/system/mesos-slave.service 
@@ -352,8 +360,9 @@ function find_gem_bin {
 function deb_ {
   local libcurl_package
   case "$linux" in
-    ubuntu/20*) libcurl_package="libcurl4 -d libcurl4-nss-dev" ;;
-    ubuntu/18*) libcurl_package="libcurl4 -d libcurl4-openssl-dev" ;;
+    ubuntu/22*) libcurl_package="libcurl4 -d libcurl4-nss-dev" ;;    
+    ubuntu/20*) libcurl_package="libcurl4 -d libcurl4-openssl-dev" ;;
+    ubuntu/18*) libcurl_package="libcurl4 -d libcurl4-nss-dev" ;;
     debian/11*) libcurl_package="libcurl4 -d libcurl4-nss-dev" ;;
     *)          libcurl_package="libcurl3" ;;
   esac
@@ -367,6 +376,7 @@ function deb_ {
                -n "${prename}mesos"
                --after-install "$this/$asset_dir/mesos.postinst"
                --after-remove "$this/$asset_dir/mesos.postrm" )
+
   pkgname="pkg"
   if $rename; then
     os_tag=${linux//[\/.]/} # convert "ubuntu/14.04" to "ubuntu1404"
