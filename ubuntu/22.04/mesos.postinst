@@ -1,5 +1,3 @@
 ldconfig
-ln -s /usr/local/bin/mesos-master /usr/sbin/mesos-master
-ln -s /usr/local/bin/mesos-agent /usr/sbin/mesos-agent
 systemctl enable mesos-master
 systemctl enable mesos-slave

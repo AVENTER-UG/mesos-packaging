@@ -173,7 +173,7 @@ function build {(
   # ubuntu 22.x. Cmake works well.
   if [[ "$linux" =~ "ubuntu/22" ]]
   then 
-    cmake ..
+    cmake -DCMAKE_INSTALL_PREFIX=/usr ..
   else
     autoreconf -f -i -Wall,no-obsolete
     ./bootstrap
