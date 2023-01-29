@@ -166,7 +166,7 @@ function checkout {
 
 function build {(
   export LD_RUN_PATH=/usr/lib/mesos
-  autoreconf -f -i -Wall,no-obsolete ../
+  autoreconf -f -i -Wall,no-obsolete 
   ./bootstrap
   mkdir -p "$build_dir"
   cd "$build_dir"
