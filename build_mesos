@@ -115,7 +115,7 @@ function go {
   create_installation
   create_lib_symlinks
   pkg
-  if [[ ! $(configure_opts) =~ "--disable-python\>" ]]
+  if [[ ! $(configure_opts) =~ "--disable-python" ]]
   then
     save_python_egg
   fi
