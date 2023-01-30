@@ -259,7 +259,7 @@ function create_installation {(
   extra_libs
   init_scripts "$linux"
 
-  if [[ ! $(configure_opts) =~ "--disable-java\>" ]]
+  if [[ ! $(configure_opts) =~ "--disable-java" ]]
   then
     case "$linux" in
       ubuntu/22*) return ;;   
