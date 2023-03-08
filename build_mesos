@@ -204,6 +204,7 @@ function os_release {
       case "${BASH_REMATCH[1]}" in
         'Red Hat'*) os=RedHat ;;
         'AlmaLinux'*) os=RedHat ;;
+        'CentOS'*) os=centos ;;
         *)           os="${BASH_REMATCH[1]}" ;;
       esac
       display_version "$os" "${BASH_REMATCH[2]}"
