@@ -7,5 +7,5 @@ description "mesos slave"
 start on stopped rc RUNLEVEL=[2345]
 respawn
 
-exec /usr/bin/mesos-init-wrapper slave
+exec /usr/bin/mesos-init-wrapper agent
 

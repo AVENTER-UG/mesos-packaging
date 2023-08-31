@@ -51,7 +51,7 @@ function globals {
   this="$(cd "$(dirname "$0")" && pwd -P)"
   name=mesos
   build_version="0.1.$(date -u +'%Y%m%d%H%M%S')"
-  repo=https://gitbox.apache.org/repos/asf/mesos.git
+  repo=https://github.com/m3scluster/clusterd.git
   use_git_version=false
   prebuilt=false
   extra_libs=''
@@ -246,7 +246,7 @@ function create_installation {(
   ( cd "$build_dir" && make install DESTDIR="$pwd"/toor )
   cd toor
   mkdir -p usr/share/doc/mesos etc/default etc/mesos var/log/mesos
-  mkdir -p etc/mesos-master etc/mesos-slave var/lib/mesos
+  mkdir -p etc/mesos-master etc/mesos-agent var/lib/mesos
   cp ../CHANGELOG                usr/share/doc/mesos/
   cp "$this"/default/mesos*      etc/default/
   echo zk://localhost:2181/mesos > etc/mesos/zk
@@ -255,7 +255,7 @@ function create_installation {(
   then
     echo /var/lib/mesos          > etc/mesos-master/work_dir
     echo 1                       > etc/mesos-master/quorum
-    echo /var/lib/mesos          > etc/mesos-slave/work_dir
+    echo /var/lib/mesos          > etc/mesos-agent/work_dir
   fi
   extra_libs
   init_scripts "$linux"
@@ -294,22 +294,22 @@ function init_scripts {
     fedora/*|redhat/7|redhat/7.*|redhat/8|redhat/8.*|centos/7|*centos/7.*|rhel/7|rhel/7.*|opensuse/*)
       mkdir -p usr/lib/systemd/system
       cp "$this"/systemd/master.systemd usr/lib/systemd/system/mesos-master.service
-      cp "$this"/systemd/slave.systemd usr/lib/systemd/system/mesos-slave.service 
+      cp "$this"/systemd/agent.systemd usr/lib/systemd/system/mesos-agent.service 
       return ;;
     debian/8*|debian/9*|ubuntu/15*|ubuntu/16*|ubuntu/17*|ubuntu/18*|ubuntu/20*|ubuntu/22*)
       mkdir -p lib/systemd/system
       cp "$this"/systemd/master.systemd lib/systemd/system/mesos-master.service
-      cp "$this"/systemd/slave.systemd lib/systemd/system/mesos-slave.service 
+      cp "$this"/systemd/agent.systemd lib/systemd/system/mesos-agent.service 
       return ;;
     debian/*)
       mkdir -p etc/init.d
       cp -p "$this"/init/master.init etc/init.d/mesos-master
-      cp -p "$this"/init/slave.init etc/init.d/mesos-slave 
+      cp -p "$this"/init/agent.init etc/init.d/mesos-agent 
       return ;;
     ubuntu/*|redhat/6|redhat/6.*|centos/6|centos/6.*)
       mkdir -p etc/init
       cp "$this"/upstart/master.upstart etc/init/mesos-master.conf
-      cp "$this"/upstart/slave.upstart etc/init/mesos-slave.conf 
+      cp "$this"/upstart/agent.upstart etc/init/mesos-agent.conf 
       return ;;
     *) err "Not sure how to make init scripts for: $1" ;;
   esac
@@ -358,10 +358,10 @@ function find_gem_bin {
 function deb_ {
   local libcurl_package
   case "$linux" in
-    ubuntu/22*) libcurl_package="libcurl4 -d libcurl4-nss-dev" ;;    
-    ubuntu/20*) libcurl_package="libcurl4 -d libcurl4-openssl-dev" ;;
-    ubuntu/18*) libcurl_package="libcurl4 -d libcurl4-nss-dev" ;;
-    debian/11*) libcurl_package="libcurl4 -d libcurl4-nss-dev" ;;
+    ubuntu/22*) libcurl_package="libcurl4 -d libcurl4-nss-dev -d libunwind8" ;;    
+    ubuntu/20*) libcurl_package="libcurl4 -d libcurl4-openssl-dev -d libunwind8" ;;
+    ubuntu/18*) libcurl_package="libcurl4 -d libcurl4-nss-dev -d libunwind8" ;;
+    debian/11*) libcurl_package="libcurl4 -d libcurl4-nss-dev -d libunwind8" ;;
     *)          libcurl_package="libcurl3" ;;
   esac
 
@@ -371,7 +371,7 @@ function deb_ {
                -d libevent-dev
                -d libsvn1
                -d libsasl2-modules
-               -n "${prename}mesos"
+               -n "${prename}${name}"
                --after-install "$this/$asset_dir/mesos.postinst"
                --after-remove "$this/$asset_dir/mesos.postrm" )
 

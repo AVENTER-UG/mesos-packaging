@@ -12,7 +12,7 @@ case "$1" in
     ;;
 esac
 
-# TODO we should restart mesos-slave or master
+# TODO we should restart mesos-agent or master
 
 #run ldconfig in order to have available libmesos.so
 
