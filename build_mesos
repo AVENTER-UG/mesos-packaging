@@ -296,7 +296,7 @@ function init_scripts {
       cp "$this"/systemd/master.systemd usr/lib/systemd/system/mesos-master.service
       cp "$this"/systemd/agent.systemd usr/lib/systemd/system/mesos-agent.service 
       return ;;
-    debian/8*|debian/9*|ubuntu/15*|ubuntu/16*|ubuntu/17*|ubuntu/18*|ubuntu/20*|ubuntu/22*)
+    debian/8*|debian/9*|debian/11*|debian/12*|ubuntu/15*|ubuntu/16*|ubuntu/17*|ubuntu/18*|ubuntu/20*|ubuntu/22*)
       mkdir -p lib/systemd/system
       cp "$this"/systemd/master.systemd lib/systemd/system/mesos-master.service
       cp "$this"/systemd/agent.systemd lib/systemd/system/mesos-agent.service 
@@ -362,6 +362,7 @@ function deb_ {
     ubuntu/20*) libcurl_package="libcurl4 -d libcurl4-openssl-dev -d libunwind8" ;;
     ubuntu/18*) libcurl_package="libcurl4 -d libcurl4-nss-dev -d libunwind8" ;;
     debian/11*) libcurl_package="libcurl4 -d libcurl4-nss-dev -d libunwind8" ;;
+    debian/12*) libcurl_package="libcurl4 -d libcurl4-nss-dev -d libunwind8" ;;
     *)          libcurl_package="libcurl3" ;;
   esac
 
